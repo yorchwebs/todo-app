@@ -40,7 +40,7 @@ def register_view(request):
         messages.success(
             request, "Usuario registrado exitosamente. ¡Ahora puedes iniciar sesión!"
         )
-        return redirect("info")
+        return redirect("index")
 
     return render(request, "users/register.html")
 
@@ -58,7 +58,7 @@ def login_view(request):
             # Iniciar sesión si las credenciales son correctas
             login(request, user)
             messages.success(request, "Inicio de sesión exitoso.")
-            return redirect("info")  # Redirigir a la página principal
+            return redirect("index")  # Redirigir a la página principal
         else:
             # Mostrar un error si las credenciales no son válidas
             messages.error(request, "Email o contraseña incorrectos.")
