@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from users.models import List, Task
+from .models import List, Task
 
 
 @login_required  # Asegúrate de que solo los usuarios autenticados puedan acceder a esta vista
