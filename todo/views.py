@@ -54,4 +54,4 @@ def index_view(request):
             except List.DoesNotExist:
                 raise ValueError("La lista no pertenece al usuario autenticado")
 
-    return render(request, "todo/index.html", data)
+    return render(request, "index.html", data)

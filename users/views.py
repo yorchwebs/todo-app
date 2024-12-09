@@ -1,5 +1,6 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -57,7 +58,6 @@ def login_view(request):
         if user is not None:
             # Iniciar sesión si las credenciales son correctas
             login(request, user)
-            messages.success(request, "Inicio de sesión exitoso.")
             return redirect("index")  # Redirigir a la página principal
         else:
             # Mostrar un error si las credenciales no son válidas
@@ -71,3 +71,9 @@ def account_view(request):
     # Mostrar la información del usuario
     
     return render(request, "users/info.html")
+
+
+@login_required
+def logout_view(request):
+        logout(request)
+        return redirect("login")
