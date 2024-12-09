@@ -1,11 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
+<section class="container">
     <div class="row">
         <div class="col-12">
             <h1>Bienvenido {{ user.username }}</h1>
         </div>
     </div>
-</div>
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Crear una nueva lista:</label>
+                <input type="text" id="title" name="title" class="form-control" required>
+                <button class="btn btn-primary">Crear</button>
+            </div>
+        </form>
+
+        {% for list in lists %}
+        <div>
+            <h2>{{ list.title }}</h2>
+            <ul>
+                {% for task in list.tasks.all %}
+                <li>{{ task.title }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
 {% endblock content %}

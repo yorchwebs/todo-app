@@ -1,8 +1,7 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.contrib import messages
 from .models import List, Task
 
 
@@ -29,11 +28,13 @@ def index_view(request):
     }
 
     if request.method == "POST":
-        if "create_list" in request.POST:
-            # Crear una nueva lista
+        if "title" in request.POST:
             title = request.POST["title"]
-            List.objects.create(title=title, user=user)  # Usa el usuario autenticado
-            return redirect("index")
+            if List.objects.filter(title=title).exists():
+                messages.error(request, "La lista ya existe.")
+            else:
+                List.objects.create(title=title, user=user)
+                messages.success(request, "La lista se ha creado correctamente.")
         elif "create_task" in request.POST:
             # Crear una nueva tarea
             title = request.POST["title"]
