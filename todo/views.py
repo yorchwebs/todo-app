@@ -5,11 +5,11 @@ from django.contrib import messages
 from .models import List, Task
 
 
-@login_required  # Asegúrate de que solo los usuarios autenticados puedan acceder a esta vista
+@login_required
 def index_view(request):
-    user = request.user  # Obtén el usuario autenticado
+    user = request.user
 
-    # Obtén las listas y tareas del usuario autenticado
+
     lists = List.objects.filter(user=user)
     tasks = Task.objects.filter(list__in=lists)
 
@@ -44,7 +44,7 @@ def index_view(request):
             try:
                 list_obj = List.objects.get(
                     id=list_id, user=user
-                )  # Verifica que la lista pertenezca al usuario
+                )
                 Task.objects.create(
                     title=title,
                     description=description,
