@@ -20,6 +20,6 @@ from django.contrib import admin
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("account/", include("users.urls")),
+    path("accounts/", include("users.urls")),
     path("", include("todo.urls")),
 ]

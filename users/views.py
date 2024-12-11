@@ -58,7 +58,7 @@ def login_view(request):
         if user is not None:
             # Iniciar sesión si las credenciales son correctas
             login(request, user)
-            return redirect("index")  # Redirigir a la página principal
+            return redirect("todo:index")  # Redirigir a la página principal
         else:
             # Mostrar un error si las credenciales no son válidas
             messages.error(request, "Email o contraseña incorrectos.")
@@ -67,13 +67,13 @@ def login_view(request):
     return render(request, "users/login.html")
 
 
-def account_view(request):
-    # Mostrar la información del usuario
+# def account_view(request):
+#     # Mostrar la información del usuario
     
-    return render(request, "users/info.html")
+#     return render(request, "users/info.html")
 
 
 @login_required
 def logout_view(request):
         logout(request)
-        return redirect("login")
+        return redirect("accounts:login")
