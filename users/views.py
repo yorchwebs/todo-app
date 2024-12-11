@@ -18,19 +18,19 @@ def register_view(request):
         # Validaciones básicas
         if User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya está en uso.")
-            return redirect("register")
+            return redirect("accounts:register")
 
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está registrado.")
-            return redirect("register")
+            return redirect("accounts:register")
 
         if password != confirm_password:
             messages.error(request, "Las contraseñas no coinciden.")
-            return redirect("register")
+            return redirect("accounts:register")
 
         if len(password) < 8:
             messages.error(request, "La contraseña debe tener al menos 8 caracteres.")
-            return redirect("register")
+            return redirect("accounts:register")
 
         # Crear el usuario
         user = User.objects.create(
@@ -41,7 +41,11 @@ def register_view(request):
         messages.success(
             request, "Usuario registrado exitosamente. ¡Ahora puedes iniciar sesión!"
         )
-        return redirect("index")
+        return redirect("todo:index")
+    
+    else:
+        messages.error(request, "Hubo un error al registrar el usuario.")
+        return render(request, "users/register.html")
 
     return render(request, "users/register.html")
 
