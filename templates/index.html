@@ -39,10 +39,21 @@
             <div class="card pt-4 shadow-sm p-3 mb-5 bg-body-tertiary rounded" style="width: 18rem; height: 18rem;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="card-title text-center">{{ list.title }}</h3>
-                    <i class="bi bi-trash3-fill fs-4"></i>
+                    <div class="dropdown">
+                        <a class="btn bg-body-tertiary" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Renombrar lista</a></li>
+                            <li><a class="dropdown-item" href="#">Eliminar lista</a></li>
+                            <li><a class="dropdown-item" href="#">Eliminar tareas completadas</a></li>
+                        </ul>
+                    </div>
                 </div>
                 <hr>
-                <button type="button" class="btn btn-light d-flex justify-content-between align-items-center w-100 px-2 py-0">
+                <button type="button"
+                    class="btn btn-light d-flex justify-content-between align-items-center w-100 px-2 py-0">
                     <div class="d-flex justify-content-center align-items-center">
                         <p class="text-center text-primary m-0">Agregar tarea</p>
                     </div>
