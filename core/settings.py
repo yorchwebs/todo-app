@@ -43,6 +43,11 @@ INSTALLED_APPS = [
     'todo',
 ]
 
+# LoginView & LogoutView Redirect
+LOGIN_REDIRECT_URL = 'todo:index'
+LOGOUT_REDIRECT_URL = 'todo:index'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

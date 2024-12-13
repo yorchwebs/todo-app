@@ -20,12 +20,12 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <div class="d-flex align-items-center">
-                <a href="/">
+                <a class="navbar-brand d-flex align-items-center" href="/">
                     <img width="30" height="30"
                         src="https://res.cloudinary.com/yorchwebs/image/upload/f_auto,q_auto/v1/todo_app/orx33x2ncuctvhwjpdvi"
                         alt="logotipo del sitio">
+                    <p class="mb-0 ms-2 fst-italic text-decoration-none fs-6">Just do it</p>
                 </a>
-                <p class="mb-0 ms-2 fst-italic">Just do it</p>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end text-center">
                             <li class="nav-item" href="#">
-                                <a class="nav-link" href="#">Mi cuenta</a>
+                                <a class="nav-link" href="{% url 'accounts:user' %}">Mi cuenta</a>
                             </li>
                             <li>
                                 <a class="nav-link" href="{% url 'accounts:logout' %}">Cerrar sesión</a>
