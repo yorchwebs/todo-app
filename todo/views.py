@@ -30,7 +30,7 @@ def index_view(request):
     if request.method == "POST":
         if "title" in request.POST:
             title = request.POST["title"]
-            if List.objects.filter(title=title).exists():
+            if List.objects.filter(user=user, title=title).exists():
                 messages.error(request, "La lista ya existe.")
             else:
                 List.objects.create(title=title, user=user)
