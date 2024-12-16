@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import render
 from django.contrib import messages
 from .models import List, Task
@@ -11,7 +11,7 @@ def index_view(request):
 
 
     lists = List.objects.filter(user=user)
-    tasks = Task.objects.filter(list__in=lists)
+    tasks = Task.objects.filter(list=lists.first())
 
     data = {
         "lists": [{"id": list.id, "title": list.title} for list in lists],
@@ -56,3 +56,65 @@ def index_view(request):
                 raise ValueError("La lista no pertenece al usuario autenticado")
 
     return render(request, "index.html", data)
+
+
+def update_list(request, list_id):
+    if request.method == "POST":
+        # Acceder al campo correcto
+        new_title = request.POST.get("new_title", None)  # Usar get para evitar errores
+        list_obj = get_object_or_404(List, id=list_id)  # Manejar caso donde la lista no existe
+        
+        if new_title:  # Verificar que new_title no sea None o vacío
+            list_obj.title = new_title
+            list_obj.save()
+        
+        return redirect("todo:index")  # Redirigir a la vista deseada
+
+    return redirect("todo:index")  # Manejar caso donde no sea POST (opcional)
+
+
+def create_task(request, list_id):
+    if request.method == "POST":
+        title = request.POST["title"]
+        description = request.POST["description"]
+        due_date = request.POST["due_date"]
+        list_obj = List.objects.get(id=list_id)
+        Task.objects.create(
+            title=title,
+            description=description,
+            due_date=due_date,
+            list=list_obj,
+        )
+        return redirect("todo:index")
+    
+    
+def update_task(request, list_id, task_id):
+    
+    list_obj = List.objects.get(id=list_id)
+    
+    task = get_object_or_404(Task, id=task_id)
+    
+    if request.method == 'POST':
+        completed = request.POST.get('completed')
+        
+        if completed == '1':
+            task.completed = 1
+        else:
+            task.completed = 0
+        
+        task.save()
+    
+    return redirect('todo:index') 
+
+
+def delete_task(request, list_id, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    task.delete()
+    return redirect("todo:index")
+
+
+def delete_list(request, list_id):
+    list_obj = List.objects.get(id=list_id)
+    list_obj.delete()
+    return redirect("todo:index")
+
