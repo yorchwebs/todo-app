@@ -19,6 +19,8 @@
         {% endfor %}
         {% endif %}
 
+<!-- Formulario para crear una nueva lista -->
+
         <form action="/" method="post">
             {% csrf_token %}
 
@@ -33,47 +35,168 @@
 
     </div>
 
+<!-- Listas -->
+
     <div class="container">
         <div class="row d-flex justify-content-center gap-5">
             {% for list in lists %}
-            <div class="card pt-4 shadow-sm p-3 mb-5 bg-body-tertiary rounded" style="width: 18rem; height: 18rem;">
+            <div class="card pt-4 shadow-sm p-3 mb-5 bg-body-tertiary rounded h-auto"
+                style="width: 18rem; height: 18rem;">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title text-center">{{ list.title }}</h5>
+                    <div class="d-flex flex-column">
+                        <h5 class="card-title text-center m-2">{{ list.title }}</h5>
+
+<!-- Formulario para renombrar la lista -->
+
+                        <!-- Formulario para renombrar la lista -->
+                        <form id="rename-form-{{ list.id }}" style="display: none;" method="post"
+                            action="{% url 'todo:update_list' list.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input type="text" name="new_title" value="{{ list.title }}" required>
+                                <input type="hidden" name="list_id" value="{{ list.id }}">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-between align-items-center">
+                                <button type="submit" class="btn btn-primary btn-md">Guardar</button>
+                                <button id="cancel-button-{{ list.id }}" type="button" class="btn btn-secondary btn-md"
+                                    onclick="cancelRenameForm('{{ list.id }}')">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+<!-- Botón para desplegar opciones de la lista -->
+
                     <div class="dropdown">
                         <a class="btn bg-body-tertiary" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Renombrar lista</a></li>
-                            <li><a class="dropdown-item" href="#">Eliminar lista</a></li>
+                            <li><a class="dropdown-item" href="#"
+                                    onclick="toggleRenameForm(event, '{{ list.id }}')">Renombrar lista</a></li>
+                            <li><a class="dropdown-item" href="{% url 'todo:delete_list' list.id %}">Eliminar lista</a>
+                            </li>
                             <li><a class="dropdown-item" href="#">Eliminar tareas completadas</a></li>
                         </ul>
                     </div>
                 </div>
                 <hr>
+
+<!-- Botón para agregar tareas -->
+
                 <button type="button"
-                    class="btn btn-light d-flex justify-content-between align-items-center w-100 px-2 py-0">
+                    class="btn btn-light d-flex justify-content-between align-items-center w-100 px-2 py-0"
+                    id="toggle-button-{{ forloop.counter }}">
                     <div class="d-flex justify-content-center align-items-center">
-                        <p class="text-center text-primary m-0">Agregar tarea</p>
+                        <p id="task-form" class="text-center text-primary m-0">Agregar tarea</p>
                     </div>
                     <div>
                         <i class="bi bi-plus-square-fill text-primary fs-5"></i>
                     </div>
                 </button>
-                <ul>
-                    {% for task in list.tasks.all %}
-                    <div>
-                        <li class="card-text">{{ task.title }}</li>
-                        <li class="card-text">{{ task.description }}</li>
-                        <li class="card-text">{{ task.due_date }}</li>
+
+<!-- Formulario para agregar tareas -->
+
+                <!-- Contenedor del formulario -->
+                <div id="form-container-{{ forloop.counter }}" style="display: none;">
+                    <!-- Ocultar el formulario inicialmente -->
+                    <form class="d-flex flex-column my-3 gap-2" action="{% url 'todo:create_task' list.id %}"
+                        method="post">
+                        {% csrf_token %}
+                        <input type="text" name="title" class="form-control form-control-sm" required
+                            placeholder="Título">
+                        <input type="text-area" name="description" class="form-control form-control-sm" required
+                            placeholder="Descripción">
+                        <input type="date" name="due_date" class="form-control form-control-sm" required>
+                        <button type="submit" class="btn btn-primary btn-sm">Crear</button>
+                    </form>
+                </div>
+
+<!-- Contenedor de las tareas -->
+
+                <!-- Lista de tareas -->
+                {% for task in tasks %}
+                <form class="d-flex my-3 text-center" action="{% url 'todo:update_task' list.id task.id %}"
+                    method="post">
+                    {% csrf_token %}
+                    {% if task.completed == 0 %}
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <div class="d-flex justify-content-between">
+                            <input class="form-check-input me-2" type="checkbox" value="1"
+                                id="flexCheckDefault-{{ task.id }}" name="completed" onchange="this.form.submit();">
+                            <label class="form-check-label" for="flexCheckDefault-{{ task.id }}">
+                                {{ task.title }}
+                            </label>
+                        </div>
+                        <div class="dropdown">
+                            <a class="btn bg-body-tertiary" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end text-center">
+                                <li><a class="dropdown-item"
+                                        href="{% url 'todo:delete_task' list.id task.id %}">Eliminar
+                                        Tarea</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    {% endfor %}
-                </ul>
+                    {% else %}
+                    <input class="form-check-input" type="checkbox" value="0" id="flexCheckChecked-{{ task.id }}"
+                        name="completed" checked onchange="this.form.submit();">
+                    <label class="form-check-label text-decoration-line-through" for="flexCheckChecked-{{ task.id }}">
+                        {{ task.title }}
+                    </label>
+                    {% endif %}
+                </form>
+                {% endfor %}
             </div>
             {% endfor %}
         </div>
     </div>
+
+<!-- JavaScript para manejar la visibilidad del formulario -->
+
+    <script>
+        // Script para alternar la visibilidad del formulario de listas
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('[id^=toggle-button-]');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const counter = this.id.split('-')[2]; // Obtener el número del botón
+                    const formContainer = document.getElementById(`form-container-${counter}`);
+
+                    // Alternar la visibilidad del formulario
+                    if (formContainer.style.display === 'none' || formContainer.style.display === '') {
+                        formContainer.style.display = 'block'; // Mostrar el formulario
+                    } else {
+                        formContainer.style.display = 'none'; // Ocultar el formulario
+                    }
+                });
+            });
+        });
+
+        // Script para alternar la visibilidad del formulario de renombrar la lista
+        function toggleRenameForm(event, listId) {
+            event.preventDefault(); // Evita que el enlace recargue la página
+            const form = document.getElementById(`rename-form-${listId}`);
+
+            // Alternar la visibilidad del formulario
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block'; // Mostrar el formulario
+            } else {
+                form.style.display = 'none'; // Ocultar el formulario
+            }
+        }
+
+        function cancelRenameForm(listId) {
+            const form = document.getElementById(`rename-form-${listId}`);
+            form.style.display = 'none'; // Ocultar el formulario
+        }
+
+    </script>
+
 
 </section>
 {% endblock content %}
